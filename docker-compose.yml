@@ -1,0 +1,60 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+    logging:
+      driver: none
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    logging:
+      driver: none
+
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+    volumes:
+      - /app/.cache
+      - /app/node_modules
+      - ./backend:/app
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend
+    volumes:
+      - /app/node_modules
+      - /app/.next
+      - ./frontend:/app
+    depends_on:
+      - db
+
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    logging:
+      driver: none
