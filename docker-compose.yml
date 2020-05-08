@@ -6,6 +6,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
     logging:
       driver: none
 
@@ -29,8 +31,9 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=password
     volumes:
-      - /app/.cache
+      # - /app/.cache
       - /app/node_modules
+      # - /app/build
       - ./backend:/app
     depends_on:
       - db

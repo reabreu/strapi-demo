@@ -76,3 +76,12 @@ coverage
 exports
 .cache
 build
+
+
+Dockerfile
+Dockerfile.dev
+.eslintrc
+.eslintignore
+README.md
+.editorconfig
+.dockerignore
